@@ -1,0 +1,18 @@
+#spring:
+#  datasource:
+#    url: ${JDBC_DATASOURCE_URL}
+#    driver-class-name: org.postgresql.Driver
+#    max-active: 10
+#    max-idle: 5
+#    min-idle: 2
+#    initia-size: 5
+#    remove-aboundoned: true
+
+spring:
+  datasource:
+    url: localhost
+    username: serqeycheremisin
+    password: sergey90x
+    name: news
+    pool: 5
+    showSql: true
