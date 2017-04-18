@@ -11,5 +11,4 @@ public interface NoteRepository  extends JpaRepository<Note, Long>{
 
     List<Note> findAllByTopic(Topic topic);
     Note findByTopicAndNoteId(Topic topic, Long noteId);
-    Note removeByNoteId(Long noteId);
 }

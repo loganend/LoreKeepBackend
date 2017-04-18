@@ -69,7 +69,7 @@ public class NoteContoller {
     public ResponseEntity deleteNote(@PathVariable("id") long id) {
 
         try {
-            noteRepository.removeByNoteId(id);
+            noteRepository.delete(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{\"error\":\"no content\"}");
         }

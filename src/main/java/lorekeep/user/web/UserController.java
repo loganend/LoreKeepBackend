@@ -118,7 +118,7 @@ public class UserController {
                 .body(new Response("info",new GetSessionMessage(httpSession.getId())));
     }
 
-    @RequestMapping(value = "session", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/session", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteSession() {
         if (httpSession.getAttribute("userId") == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
