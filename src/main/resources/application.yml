@@ -7,7 +7,7 @@ spring:
     min-idle: 2
     initia-size: 5
     remove-aboundoned: true
-#
+
 #spring:
 #  jpa:
 #    database: POSTGRESQL
