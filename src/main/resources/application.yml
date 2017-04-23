@@ -1,22 +1,22 @@
-#spring:
-#  datasource:
-#    url: ${JDBC_DATASOURCE_URL}
-#    driver-class-name: org.postgresql.Driver
-#    max-active: 10
-#    max-idle: 5
-#    min-idle: 2
-#    initia-size: 5
-#    remove-aboundoned: true
-
 spring:
-  jpa:
-    database: POSTGRESQL
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
   datasource:
-    platform: postgres
-    url: jdbc:postgresql://localhost:5432/lorekeep
-    username: serqeycheremisin
-    password: sergey90x
-    driverClassName: org.postgresql.Driver
+    url: ${JDBC_DATASOURCE_URL}
+    driver-class-name: org.postgresql.Driver
+    max-active: 10
+    max-idle: 5
+    min-idle: 2
+    initia-size: 5
+    remove-aboundoned: true
+#
+#spring:
+#  jpa:
+#    database: POSTGRESQL
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: create-drop
+#  datasource:
+#    platform: postgres
+#    url: jdbc:postgresql://localhost:5432/lorekeep
+#    username: serqeycheremisin
+#    password: sergey90x
+#    driverClassName: org.postgresql.Driver
