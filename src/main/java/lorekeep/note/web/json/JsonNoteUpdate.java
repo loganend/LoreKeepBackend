@@ -1,31 +1,35 @@
-package lorekeep.topic.web;
+package lorekeep.note.web.json;
 
-import lorekeep.user.User;
+public class JsonNoteUpdate {
 
-import java.util.Date;
-
-public class JsonTopicUpdate {
-
+    private String noteId;
     private String topicId;
-    private String userId;
-    private String title;
+    private String comment;
+    private String content;
+    private String url;
     private String image;
     private String rating;
-    private String creationDate;
     private String lastUsed;
-    private String color;
     private String changed;
+
+    public String getNoteId() {
+        return noteId;
+    }
 
     public String getTopicId() {
         return topicId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getComment() {
+        return comment;
     }
 
-    public String getTitle() {
-        return title;
+    public String getContent() {
+        return content;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getImage() {
@@ -36,16 +40,8 @@ public class JsonTopicUpdate {
         return rating;
     }
 
-    public String getCreationDate() {
-        return creationDate;
-    }
-
     public String getLastUsed() {
         return lastUsed;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public String getChanged() {

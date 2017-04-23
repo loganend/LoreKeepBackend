@@ -1,20 +1,21 @@
 package lorekeep.note;
 
 import lorekeep.topic.Topic;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
+
 
 @Entity
 @Table(name = "note")
 public class Note {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long noteId;
 
-    @NotNull
-    @ManyToOne
+    //    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REMOVE);
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "topicId")
     private Topic topic;
     private String comment;
@@ -110,7 +111,6 @@ public class Note {
     public Boolean getChanged() {
         return changed;
     }
-
 
 
 }

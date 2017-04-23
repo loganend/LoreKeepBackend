@@ -2,10 +2,12 @@ package lorekeep.note.web;
 
 import lorekeep.note.Note;
 import lorekeep.note.NoteRepository;
+import lorekeep.note.web.json.JsonNoteCreate;
+import lorekeep.note.web.json.JsonNoteUpdate;
 import lorekeep.topic.Topic;
 import lorekeep.topic.TopicRepository;
-import lorekeep.user.web.ErrorMessage;
-import lorekeep.user.web.Response;
+import lorekeep.user.web.json.ErrorMessage;
+import lorekeep.user.web.json.Response;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,7 +58,7 @@ public class NoteContoller {
 
         note = noteRepository.save(note);
 
-        return ResponseEntity.ok().body("\"id: " + note.getNoteId());
+        return ResponseEntity.ok().body(new Response("id", note.getNoteId()));
     }
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.GET)
@@ -74,7 +76,7 @@ public class NoteContoller {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{\"error\":\"no content\"}");
         }
 
-        return ResponseEntity.ok().body("deleted");
+        return ResponseEntity.ok().body(new Response("info", "deleted"));
     }
 
     @RequestMapping(value = "/note", method = RequestMethod.PUT)
@@ -95,24 +97,25 @@ public class NoteContoller {
         }
         if (noteJson.getComment() != null)
             note.setComment(noteJson.getComment());
-        else if (noteJson.getContent() != null)
+        if (noteJson.getContent() != null)
             note.setContent(noteJson.getContent());
-        else if (noteJson.getUrl() != null)
+        if (noteJson.getUrl() != null)
             note.setUrl(noteJson.getUrl());
-        else if (noteJson.getImage() != null)
+        if (noteJson.getImage() != null)
             note.setImage(Base64.decodeBase64(noteJson.getImage()));
-        else if (noteJson.getLastUsed() != null) {
+        if (noteJson.getLastUsed() != null) {
             SimpleDateFormat formatter = new SimpleDateFormat();
             try {
                 note.setLastUsed(formatter.parse(noteJson.getLastUsed()));
             } catch (ParseException ex) {
 
             }
-        } else if (noteJson.getRating() != null)
+        }
+        if (noteJson.getRating() != null)
             note.setRating(Integer.parseInt(noteJson.getRating()));
-        else if (noteJson.getTopicId() != null)
+        if (noteJson.getTopicId() != null)
             note.setLastUsed(null);
-        else if (noteJson.getChanged() != null)
+        if (noteJson.getChanged() != null)
             note.setChanged(Boolean.parseBoolean(noteJson.getChanged()));
 
         noteRepository.save(note);

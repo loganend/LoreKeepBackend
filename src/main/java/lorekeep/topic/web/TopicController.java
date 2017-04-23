@@ -1,11 +1,13 @@
 package lorekeep.topic.web;
 
 import lorekeep.topic.Topic;
+import lorekeep.topic.web.json.JsonTopicCreate;
+import lorekeep.topic.web.json.JsonTopicUpdate;
 import lorekeep.user.User;
 import lorekeep.topic.TopicRepository;
 import lorekeep.user.UserRepository;
-import lorekeep.user.web.ErrorMessage;
-import lorekeep.user.web.Response;
+import lorekeep.user.web.json.ErrorMessage;
+import lorekeep.user.web.json.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +58,7 @@ public class TopicController {
 
         topic = topicRepository.save(topic);
 
-        return ResponseEntity.ok().body("\"id: " + topic.getTopicId());
+        return ResponseEntity.ok().body(new Response("id",topic.getTopicId()));
     }
 
     @RequestMapping(value = "/topic/{id}", method = RequestMethod.GET)
@@ -74,7 +76,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{\"error\":\"no content\"}");
         }
 
-        return ResponseEntity.ok().body("deleted");
+        return ResponseEntity.ok().body(new Response("info", "deleted"));
     }
 
     @RequestMapping(value = "/topic", method = RequestMethod.PUT)
@@ -96,9 +98,9 @@ public class TopicController {
         }
         if(topicJson.getTitle() != null)
             topic.setTitle(topicJson.getTitle());
-        else if(topicJson.getImage() != null)
+        if(topicJson.getImage() != null)
             topic.setImage(Base64.decodeBase64(topicJson.getImage()));
-        else if(topicJson.getLastUsed() != null ) {
+        if(topicJson.getLastUsed() != null ) {
             SimpleDateFormat formatter = new SimpleDateFormat();
             try {
                 topic.setLastUsed(formatter.parse(topicJson.getLastUsed()));
@@ -106,13 +108,13 @@ public class TopicController {
 
             }
         }
-        else if(topicJson.getRating() != null)
+        if(topicJson.getRating() != null)
             topic.setRating(Integer.parseInt(topicJson.getRating()));
-        else if(topicJson.getTopicId() != null)
+        if(topicJson.getTopicId() != null)
             topic.setLastUsed(null);
-        else if(topicJson.getColor() != null)
+        if(topicJson.getColor() != null)
             topic.setColor(topicJson.getColor());
-        else if(topicJson.getChanged() != null)
+        if(topicJson.getChanged() != null)
             topic.setChanged(Boolean.parseBoolean(topicJson.getChanged()));
 
         topicRepository.save(topic);

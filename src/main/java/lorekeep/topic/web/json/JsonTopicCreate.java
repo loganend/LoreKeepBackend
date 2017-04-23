@@ -1,4 +1,4 @@
-package lorekeep.topic.web;
+package lorekeep.topic.web.json;
 
 public class JsonTopicCreate {
 

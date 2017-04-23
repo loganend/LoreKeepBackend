@@ -1,4 +1,4 @@
-package lorekeep.note.web;
+package lorekeep.note.web.json;
 
 public class JsonNoteCreate {
 

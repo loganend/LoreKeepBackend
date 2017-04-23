@@ -1,5 +1,9 @@
 package lorekeep.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,10 +11,11 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long userId;
     @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
     @Column(unique = true)
     private String email;

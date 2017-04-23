@@ -1,25 +1,32 @@
 package lorekeep.topic;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lorekeep.note.Note;
 import lorekeep.user.User;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "topic")
 public class Topic {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long topicId;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "userId")
+    @JsonIgnoreProperties({"username", "email", "phoneNumber"})
     private User user;
     private String title;
-    private byte [] image;
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<Note> notes;
+    private byte[] image;
     private Integer rating;
     private Date creationDate;
     private Date lastUsed;
@@ -32,6 +39,7 @@ public class Topic {
     public void setTopicId(long topicId) {
         this.topicId = topicId;
     }
+
 
     public void setUser(User user) {
         this.user = user;

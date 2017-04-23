@@ -1,4 +1,4 @@
-package lorekeep.user.web;
+package lorekeep.user.web.json;
 
 public class SignUpMessage {
     private String login;
