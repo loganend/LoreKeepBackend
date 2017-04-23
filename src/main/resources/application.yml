@@ -1,12 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgres://eiljqznqicwlfs:2f1c82b81fb9433a214250a4ad70390b0172c32d0ddf115a16be9302e3c87316@ec2-23-23-237-68.compute-1.amazonaws.com:5432/d9r0r6b4jsa60r
+    url: ${JDBC_DATASOURCE_URL}
     driver-class-name: org.postgresql.Driver
     max-active: 10
     max-idle: 5
     min-idle: 2
     initia-size: 5
     remove-aboundoned: true
+
+
+#    url: jdbc:postgres://eiljqznqicwlfs:2f1c82b81fb9433a214250a4ad70390b0172c32d0ddf115a16be9302e3c87316@ec2-23-23-237-68.compute-1.amazonaws.com:5432/d9r0r6b4jsa60r
 
 
 #    url: ${JDBC_DATASOURCE_URL}
