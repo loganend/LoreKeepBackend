@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${JDBC_DATASOURCE_URL}
+    url: jdbc:postgres://lvqjxrczcefimw:70625ce67928176978c610c1fc6232d2271258cf17aa2b630b3b1d222e7f4c79@ec2-54-235-153-124.compute-1.amazonaws.com:5432/d9hv9gdov3oa1j
     driver-class-name: org.postgresql.Driver
     max-active: 10
     max-idle: 5
@@ -8,6 +8,8 @@ spring:
     initia-size: 5
     remove-aboundoned: true
 
+
+#    url: ${JDBC_DATASOURCE_URL}
 #spring:
 #  jpa:
 #    database: POSTGRESQL
