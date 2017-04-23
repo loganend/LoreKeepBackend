@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgres://lvqjxrczcefimw:70625ce67928176978c610c1fc6232d2271258cf17aa2b630b3b1d222e7f4c79@ec2-54-235-153-124.compute-1.amazonaws.com:5432/d9hv9gdov3oa1j
+    url: jdbc:postgres://eiljqznqicwlfs:2f1c82b81fb9433a214250a4ad70390b0172c32d0ddf115a16be9302e3c87316@ec2-23-23-237-68.compute-1.amazonaws.com:5432/d9r0r6b4jsa60r
     driver-class-name: org.postgresql.Driver
     max-active: 10
     max-idle: 5
