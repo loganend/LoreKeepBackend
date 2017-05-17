@@ -1,26 +1,3 @@
-spring:
-  jpa:
-    database: POSTGRESQL
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-  datasource:
-    platform: postgres
-    url: ${JDBC_DATASOURCE_URL}
-    username: ${JDBC_DATABASE_USERNAME}
-    password: ${JDBC_DATABASE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    max-active: 10
-    max-idle: 5
-    min-idle: 2
-    initia-size: 5
-    remove-aboundoned: true
-
-
-#    url: jdbc:postgres://eiljqznqicwlfs:2f1c82b81fb9433a214250a4ad70390b0172c32d0ddf115a16be9302e3c87316@ec2-23-23-237-68.compute-1.amazonaws.com:5432/d9r0r6b4jsa60r
-
-
-#    url: ${JDBC_DATASOURCE_URL}
 #spring:
 #  jpa:
 #    database: POSTGRESQL
@@ -29,7 +6,30 @@ spring:
 #      ddl-auto: create-drop
 #  datasource:
 #    platform: postgres
-#    url: jdbc:postgresql://localhost:5432/lorekeep
-#    username: serqeycheremisin
-#    password: sergey90x
-#    driverClassName: org.postgresql.Driver
+#    url: ${JDBC_DATASOURCE_URL}
+#    username: ${JDBC_DATABASE_USERNAME}
+#    password: ${JDBC_DATABASE_PASSWORD}
+#    driver-class-name: org.postgresql.Driver
+#    max-active: 10
+#    max-idle: 5
+#    min-idle: 2
+#    initia-size: 5
+#    remove-aboundoned: true
+
+
+#    url: jdbc:postgres://eiljqznqicwlfs:2f1c82b81fb9433a214250a4ad70390b0172c32d0ddf115a16be9302e3c87316@ec2-23-23-237-68.compute-1.amazonaws.com:5432/d9r0r6b4jsa60r
+
+
+#    url: ${JDBC_DATASOURCE_URL}
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/lorekeep
+    username: serqeycheremisin
+    password: sergey90x
+    driverClassName: org.postgresql.Driver

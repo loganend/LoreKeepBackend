@@ -1,5 +1,7 @@
 package lorekeep.topic.web;
 
+import lorekeep.changes.Changes;
+import lorekeep.changes.ChangesRepository;
 import lorekeep.topic.Topic;
 import lorekeep.topic.web.json.JsonTopicCreate;
 import lorekeep.topic.web.json.JsonTopicUpdate;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.apache.commons.codec.binary.Base64;
 
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -27,6 +30,12 @@ public class TopicController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ChangesRepository changesRepository;
+
+    @Autowired
+    private HttpSession httpSession;
 
     @RequestMapping(value = "/topic", method = RequestMethod.POST)
     public ResponseEntity createTopic(@RequestBody JsonTopicCreate topicJson) {
@@ -58,7 +67,22 @@ public class TopicController {
 
         topic = topicRepository.save(topic);
 
-        return ResponseEntity.ok().body(new Response("id",topic.getTopicId()));
+        //  ??????????
+
+        Changes changes = changesRepository
+                .findBySessionIdAndUserIdAndTopicId(httpSession.getId(), topic.getUser().getUserId(), topic.getTopicId());
+
+
+        if(changes == null) {
+            changes = new Changes();
+            changes.setUserId(topic.getUser().getUserId());
+            changes.setSession(httpSession.getId());
+            changes.setTopicId(topic.getTopicId());
+            changes.setNoteId(1);                           // ERROR ERROR ERROR ERROR
+            changesRepository.save(changes);
+        }
+
+        return ResponseEntity.ok().body(new Response("id", topic.getTopicId()));
     }
 
     @RequestMapping(value = "/topic/{id}", method = RequestMethod.GET)
@@ -78,6 +102,8 @@ public class TopicController {
 
         return ResponseEntity.ok().body(new Response("info", "deleted"));
     }
+
+
 
     @RequestMapping(value = "/topic", method = RequestMethod.PUT)
     public ResponseEntity updateTopic(@RequestBody JsonTopicUpdate topicJson){

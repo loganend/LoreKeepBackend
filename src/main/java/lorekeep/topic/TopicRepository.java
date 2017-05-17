@@ -15,4 +15,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     Topic findByTopicId(Long topicId);
     Topic findByUserAndTopicId(User user, Long topicId);
 
+
 }
