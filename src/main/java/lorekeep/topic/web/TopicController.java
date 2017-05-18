@@ -5,6 +5,8 @@ import lorekeep.changes.ChangesRepository;
 import lorekeep.topic.Topic;
 import lorekeep.topic.web.json.JsonTopicCreate;
 import lorekeep.topic.web.json.JsonTopicUpdate;
+import lorekeep.user.Session;
+import lorekeep.user.SessionRepository;
 import lorekeep.user.User;
 import lorekeep.topic.TopicRepository;
 import lorekeep.user.UserRepository;
@@ -20,6 +22,7 @@ import org.apache.commons.codec.binary.Base64;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -35,10 +38,13 @@ public class TopicController {
     private ChangesRepository changesRepository;
 
     @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
     private HttpSession httpSession;
 
     @RequestMapping(value = "/topic", method = RequestMethod.POST)
-    public ResponseEntity createTopic(@RequestBody JsonTopicCreate topicJson) {
+    public ResponseEntity createTopic(@RequestBody JsonTopicCreate topicJson, @CookieValue("sessionId") String cookies) {
 
         if (topicJson == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("\"error\": \"no content");
@@ -69,18 +75,24 @@ public class TopicController {
 
         //  ??????????
 
-        Changes changes = changesRepository
-                .findBySessionIdAndUserIdAndTopicId(httpSession.getId(), topic.getUser().getUserId(), topic.getTopicId());
+//        String session = (String)httpSession.getAttribute("userId");
 
+//        Changes changes = changesRepository
+//                .findBySessionIdAndUserIdAndTopicId(cookies, topic.getUser().getUserId(), topic.getTopicId());
 
-        if(changes == null) {
-            changes = new Changes();
-            changes.setUserId(topic.getUser().getUserId());
-            changes.setSession(httpSession.getId());
-            changes.setTopicId(topic.getTopicId());
-            changes.setNoteId(1);                           // ERROR ERROR ERROR ERROR
-            changesRepository.save(changes);
+        List<Session> sessions = sessionRepository.findByUserId(topic.getUser().getUserId());
+
+        for(int i=0; i<sessions.size(); i++){
+            if(!sessions.get(i).getSessionId().equals(cookies)){
+                Changes changes = new Changes();
+                changes.setUserId(topic.getUser().getUserId());
+                changes.setSession(sessions.get(i).getSessionId());
+                changes.setTopicId(topic.getTopicId());
+                changes.setNoteId(1);                           // ERROR ERROR ERROR ERROR
+                changesRepository.save(changes);
+            }
         }
+
 
         return ResponseEntity.ok().body(new Response("id", topic.getTopicId()));
     }

@@ -1,5 +1,7 @@
 package lorekeep.user.web;
 
+import lorekeep.user.Session;
+import lorekeep.user.SessionRepository;
 import lorekeep.user.UserRepository;
 import lorekeep.user.User;
 import lorekeep.user.web.json.*;
@@ -10,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
@@ -22,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRpository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
 
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
@@ -49,7 +56,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
-    public ResponseEntity signin(@RequestBody JsonSignin body) {
+    public ResponseEntity signin(@RequestBody JsonSignin body,  HttpServletResponse response) {
         final String login = body.getLogin();
         final String password = body.getPassword();
 
@@ -66,8 +73,18 @@ public class UserController {
                     .body(new Response("error", new ErrorMessage("Incorrect login/password")));
         }
 
+
         httpSession.setAttribute("userId", user.getUserId());
         httpSession.setAttribute("login", login);
+
+        Session session = new Session();
+        session.setUserId(user.getUserId());
+        session.setSessionId(httpSession.getId());
+        sessionRepository.save(session);
+
+//        Cookie cookie = new Cookie("foo", httpSession.getId());
+//        cookie.setMaxAge(10000);
+//        response.addCookie(cookie);
 
         return ResponseEntity.ok()
                 .body(new Response("info",new SessionMessage(httpSession.getId(), user.getUserId())));
@@ -131,12 +148,15 @@ public class UserController {
     }
 
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
-    public ResponseEntity isauth(){
-        if(httpSession.getAttribute("userId") == null){
+    public ResponseEntity isauth(@CookieValue("sessionId") String sessionId){
+
+        Session session = sessionRepository.findBySessionId(sessionId);
+
+        if(session != null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new Response("error", new ErrorMessage("Access allowed only for registered users")));
         }
 
-        return ResponseEntity.ok().body("User logged in");
+        return ResponseEntity.ok().body(new Response("User logged in", session.getUserId()));
     }
 }
