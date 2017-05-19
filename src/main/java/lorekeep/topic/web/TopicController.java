@@ -118,18 +118,19 @@ public class TopicController {
 
 
     @RequestMapping(value = "/topic", method = RequestMethod.PUT)
-    public ResponseEntity updateTopic(@RequestBody JsonTopicUpdate topicJson){
+    public ResponseEntity updateTopic(@RequestBody JsonTopicUpdate topicJson, @CookieValue("sessionId") String sessionId){
+
+
         if (topicJson == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("\"error\": \"no content");
         }
-
         Topic topic = new Topic();
         User user = userRepository.findByUserId(Long.parseLong(topicJson.getUserId()));
-        if(topic == null){
+        if(user == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new Response("error",new ErrorMessage("User not exist")));
         }
-        topic = topicRepository.findByUserAndTopicId(user, Long.parseLong(topicJson.getTopicId()));
+        topic = topicRepository.findByUserAndTopicId(user, Long.parseLong(topicJson.getServerTopicId()));
         if(topic == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new Response("error",new ErrorMessage("Topic not exist")));
@@ -157,6 +158,20 @@ public class TopicController {
 
         topicRepository.save(topic);
 
-        return ResponseEntity.ok().body(new Response("info", "updated"));
+
+        List<Session> sessions = sessionRepository.findByUserId(topic.getUser().getUserId());
+
+        for(int i=0; i<sessions.size(); i++){
+            if(!sessions.get(i).getSessionId().equals(sessionId)){
+                Changes changes = new Changes();
+                changes.setUserId(topic.getUser().getUserId());
+                changes.setSession(sessions.get(i).getSessionId());
+                changes.setTopicId(topic.getTopicId());
+                changes.setNoteId(1);                           // ERROR ERROR ERROR ERROR
+                changesRepository.save(changes);
+            }
+        }
+
+        return ResponseEntity.ok().body(new Response("id", topic.getTopicId()));
     }
 }

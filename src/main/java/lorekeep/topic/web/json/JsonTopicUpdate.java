@@ -4,6 +4,7 @@ package lorekeep.topic.web.json;
 public class JsonTopicUpdate {
 
     private String topicId;
+    private String serverTopicId;
     private String userId;
     private String title;
     private String image;
@@ -12,6 +13,11 @@ public class JsonTopicUpdate {
     private String lastUsed;
     private String color;
     private String changed;
+
+
+    public String getServerTopicId() {
+        return serverTopicId;
+    }
 
     public String getTopicId() {
         return topicId;
