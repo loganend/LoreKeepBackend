@@ -17,7 +17,7 @@ public interface ChangesRepository extends JpaRepository<Changes, Long> {
 //    @Query ("select c from Changes c")
 //    ArrayList<Changes> findAllByCustomQueryAndStream();
 
-    @Query("select u from Changes u where u.sessionId = :sessionId or u.userId = :userId")
+    @Query("select u from Changes u where u.sessionId = :sessionId or u.userId = :userId and u.topicId is not null")
     List<Changes> findBySessionIdAndUserId(@Param("sessionId") String sessionId,
                                             @Param("userId") Long userId);
 

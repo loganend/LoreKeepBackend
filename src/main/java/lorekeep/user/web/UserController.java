@@ -157,6 +157,7 @@ public class UserController {
                     .body(new Response("error", new ErrorMessage("Access allowed only for registered users")));
         }
 
-        return ResponseEntity.ok().body(new Response("User logged in", session.getUserId()));
+        return ResponseEntity.ok().body(new Response("User logged in",new AuthMessage(session.getUserId())));
+
     }
 }

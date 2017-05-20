@@ -38,13 +38,6 @@ public class ChangesController {
     @RequestMapping(value = "/changes", method = RequestMethod.GET)
     public ResponseEntity<?> changesTopic(@CookieValue("sessionId") String cookies) {
 
-//        HttpSession sess = request.getSession();
-//        boolean isSessionNew = sess.isNew();
-//        String sessionId = sess.getId();
-//        String cookieFromRequestHeader = request.getHeader("cookie");
-
-//        String session = (String)httpSession.getAttribute("userId");
-//        Long user = (Long)httpSession.getAttribute("userId");
 
         List<Topic> topics = new ArrayList<Topic>();
 
@@ -68,4 +61,7 @@ public class ChangesController {
 
         return ResponseEntity.ok(topics);
     }
+
+//    @RequestMapping(value="/changes/delete/topic", method = RequestMethod.GET)
+//    public ResponseEntity<?> changesTopic(@CookieValue("sessionId") String cookies);
 }
