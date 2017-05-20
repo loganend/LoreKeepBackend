@@ -39,16 +39,17 @@ public class ChangesController {
         }
 
 
-        List<Changes> topicsId = changesRepository.findBySessionIdAndUserId(cookies, changes.getUserId());
+        List<Changes> topicsId = changesRepository.findBySessionIdAndUserI(cookies, changes.getUserId());
 
         for (int i = 0; i < topicsId.size(); i++) {
             topics.add(i, topicRepository.findByTopicId(topicsId.get(i).getTopicId()));
         }
 
-        try {
-            changesRepository.deleteBySessionId(cookies);
-        } catch (Exception e) {
-
+        if(!topicsId.isEmpty()) {
+            try {
+                changesRepository.deleteBySessionId(cookies);
+            } catch (Exception e) {
+            }
         }
 
         return ResponseEntity.ok(topics);
@@ -63,7 +64,15 @@ public class ChangesController {
             return ResponseEntity.ok(null);
         }
 
-        List<Long> topicsDelId = changesRepository.findDelBySessionIdAndUserId(cookies, changes.getUserId());
+        List<Long> topicsDelId = changesRepository.findDelBySessionIdAndUserI(cookies, changes.getUserId());
+
+        if(!topicsDelId.isEmpty()) {
+            try {
+                changesRepository.deleteBySessionId(cookies);
+            } catch (Exception e) {
+
+            }
+        }
 
         return ResponseEntity.ok().body(topicsDelId);
     }

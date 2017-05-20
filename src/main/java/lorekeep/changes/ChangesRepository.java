@@ -17,12 +17,12 @@ public interface ChangesRepository extends JpaRepository<Changes, Long> {
 //    @Query ("select c from Changes c")
 //    ArrayList<Changes> findAllByCustomQueryAndStream();
 
-    @Query("select u from Changes u where u.sessionId = :sessionId or u.userId = :userId and u.topicId is not null")
-    List<Changes> findBySessionIdAndUserId(@Param("sessionId") String sessionId,
+    @Query("select u from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.topicId > 0")
+    List<Changes> findBySessionIdAndUserI(@Param("sessionId") String sessionId,
                                             @Param("userId") Long userId);
 
-    @Query("select u.topicDelId from Changes u where u.sessionId = :sessionId or u.userId = :userId and u.topicDelId is not null")
-    List<Long> findDelBySessionIdAndUserId(@Param("sessionId") String sessionId,
+    @Query("select u.topicDelId from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.topicDelId > 0")
+    List<Long> findDelBySessionIdAndUserI(@Param("sessionId") String sessionId,
                                               @Param("userId") Long userId);
 
 

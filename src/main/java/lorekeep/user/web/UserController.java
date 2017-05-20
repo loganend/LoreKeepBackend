@@ -153,8 +153,9 @@ public class UserController {
         Session session = sessionRepository.findBySessionId(sessionId);
 
         if(session == null){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new Response("error", new ErrorMessage("Access allowed only for registered users")));
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(new Response("error", new ErrorMessage("Access allowed only for registered users")));
+            return ResponseEntity.ok().body(new Response("User not logged in",new AuthMessage(-1l)));
         }
 
         return ResponseEntity.ok().body(new Response("User logged in",new AuthMessage(session.getUserId())));
