@@ -47,7 +47,7 @@ public class ChangesController {
 
         if(!topicsId.isEmpty()) {
             try {
-                changesRepository.deleteBySessionId(cookies);
+                changesRepository.deleteSessionCreatedTopic(cookies);
             } catch (Exception e) {
             }
         }
@@ -68,7 +68,7 @@ public class ChangesController {
 
         if(!topicsDelId.isEmpty()) {
             try {
-                changesRepository.deleteBySessionId(cookies);
+                changesRepository.deleteSessionDelTopic(cookies);
             } catch (Exception e) {
 
             }
