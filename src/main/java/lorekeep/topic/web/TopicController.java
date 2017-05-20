@@ -40,8 +40,6 @@ public class TopicController {
     @Autowired
     private SessionRepository sessionRepository;
 
-    @Autowired
-    private HttpSession httpSession;
 
     @RequestMapping(value = "/topic", method = RequestMethod.POST)
     public ResponseEntity createTopic(@RequestBody JsonTopicCreate topicJson, @CookieValue("sessionId") String cookies) {
@@ -73,13 +71,6 @@ public class TopicController {
 
         topic = topicRepository.save(topic);
 
-        //  ??????????
-
-//        String session = (String)httpSession.getAttribute("userId");
-
-//        Changes changes = changesRepository
-//                .findBySessionIdAndUserIdAndTopicId(cookies, topic.getUser().getUserId(), topic.getTopicId());
-
         List<Session> sessions = sessionRepository.findByUserId(topic.getUser().getUserId());
 
         for(int i=0; i<sessions.size(); i++){
@@ -88,7 +79,6 @@ public class TopicController {
                 changes.setUserId(topic.getUser().getUserId());
                 changes.setSession(sessions.get(i).getSessionId());
                 changes.setTopicId(topic.getTopicId());
-                changes.setNoteId(1);                           // ERROR ERROR ERROR ERROR
                 changesRepository.save(changes);
             }
         }
@@ -104,13 +94,29 @@ public class TopicController {
     }
 
     @RequestMapping(value = "/topic/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteTopic(@PathVariable("id") long id) {
+    public ResponseEntity deleteTopic(@PathVariable("id") long id, @CookieValue("sessionId") String sessionId) {
+
+        Topic topic = topicRepository.findByTopicId(id);
 
         try {
             topicRepository.delete(id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{\"error\":\"no content\"}");
+        }finally {
         }
+
+        List<Session> sessions = sessionRepository.findByUserId(topic.getUser().getUserId());
+
+        for(int i=0; i<sessions.size(); i++){
+            if(!sessions.get(i).getSessionId().equals(sessionId)){
+                Changes changes = new Changes();
+                changes.setUserId(topic.getUser().getUserId());
+                changes.setSession(sessions.get(i).getSessionId());
+                changes.setTopicDelId(topic.getTopicId());
+                changesRepository.save(changes);
+            }
+        }
+
 
         return ResponseEntity.ok().body(new Response("info", "deleted"));
     }
@@ -167,7 +173,6 @@ public class TopicController {
                 changes.setUserId(topic.getUser().getUserId());
                 changes.setSession(sessions.get(i).getSessionId());
                 changes.setTopicId(topic.getTopicId());
-                changes.setNoteId(1);                           // ERROR ERROR ERROR ERROR
                 changesRepository.save(changes);
             }
         }

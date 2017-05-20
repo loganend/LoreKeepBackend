@@ -5,8 +5,6 @@ import lorekeep.changes.Changes;
 import lorekeep.changes.ChangesRepository;
 import lorekeep.topic.Topic;
 import lorekeep.topic.TopicRepository;
-import lorekeep.user.SessionRepository;
-import lorekeep.user.web.json.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +26,6 @@ public class ChangesController {
     @Autowired
     private TopicRepository topicRepository;
 
-    @Autowired
-    private HttpSession httpSession;
-
-    @Autowired
-    private SessionRepository sessionRepository;
 
     @RequestMapping(value = "/changes", method = RequestMethod.GET)
     public ResponseEntity<?> changesTopic(@CookieValue("sessionId") String cookies) {
@@ -55,13 +47,24 @@ public class ChangesController {
 
         try {
             changesRepository.deleteBySessionId(cookies);
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
 
         return ResponseEntity.ok(topics);
     }
 
-//    @RequestMapping(value="/changes/delete/topic", method = RequestMethod.GET)
-//    public ResponseEntity<?> changesTopic(@CookieValue("sessionId") String cookies);
+    @RequestMapping(value = "/changes/delete/topic", method = RequestMethod.GET)
+    public ResponseEntity<?> changesDelTopic(@CookieValue("sessionId") String cookies) {
+
+
+        Changes changes = changesRepository.findFirstBySessionId(cookies);
+        if (changes == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        List<Long> topicsDelId = changesRepository.findDelBySessionIdAndUserId(cookies, changes.getUserId());
+
+        return ResponseEntity.ok().body(topicsDelId);
+    }
 }

@@ -21,6 +21,10 @@ public interface ChangesRepository extends JpaRepository<Changes, Long> {
     List<Changes> findBySessionIdAndUserId(@Param("sessionId") String sessionId,
                                             @Param("userId") Long userId);
 
+    @Query("select u.topicDelId from Changes u where u.sessionId = :sessionId or u.userId = :userId and u.topicDelId is not null")
+    List<Long> findDelBySessionIdAndUserId(@Param("sessionId") String sessionId,
+                                              @Param("userId") Long userId);
+
 
     Changes findBySessionIdAndUserIdAndTopicId(String sessionId, Long userId, Long topicId);
 

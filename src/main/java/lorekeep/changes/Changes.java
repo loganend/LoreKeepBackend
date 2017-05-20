@@ -15,6 +15,25 @@ public class Changes {
     private long userId;
     private long topicId;
     private long noteId;
+    private long topicDelId;
+    private long noteDelId;
+
+    public void setTopicDelId(long topicDelId) {
+        this.topicDelId = topicDelId;
+    }
+
+    public void setNoteDelId(long noteDelId) {
+        this.noteDelId = noteDelId;
+    }
+
+    public long getTopicDelId() {
+
+        return topicDelId;
+    }
+
+    public long getNoteDelId() {
+        return noteDelId;
+    }
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
