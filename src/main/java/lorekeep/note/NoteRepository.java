@@ -1,5 +1,6 @@
 package lorekeep.note;
 
+import lorekeep.user.User;
 import lorekeep.topic.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

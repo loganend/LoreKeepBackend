@@ -1,5 +1,10 @@
 package lorekeep.note;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lorekeep.topic.Topic;
 
 import javax.persistence.*;
@@ -17,6 +22,7 @@ public class Note {
     //    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.REMOVE);
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "topicId")
+    @JsonIgnore
     private Topic topic;
     private String comment;
     @Column(columnDefinition = "text")

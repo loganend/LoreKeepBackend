@@ -6,6 +6,7 @@ import lorekeep.note.web.json.JsonNoteCreate;
 import lorekeep.note.web.json.JsonNoteUpdate;
 import lorekeep.topic.Topic;
 import lorekeep.topic.TopicRepository;
+import lorekeep.user.UserRepository;
 import lorekeep.user.web.json.ErrorMessage;
 import lorekeep.user.web.json.Response;
 import org.apache.commons.codec.binary.Base64;
@@ -14,8 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import lorekeep.user.User;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -26,6 +30,9 @@ public class NoteContoller {
 
     @Autowired
     private NoteRepository noteRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(value = "/note", method = RequestMethod.POST)
     public ResponseEntity createNote(@RequestBody JsonNoteCreate noteJson) {
@@ -45,13 +52,15 @@ public class NoteContoller {
         note.setComment(noteJson.getComment());
         note.setContent(noteJson.getContent());
         note.setUrl(noteJson.getUrl());
-        note.setImage(Base64.decodeBase64(noteJson.getImage()));
-        SimpleDateFormat formatter = new SimpleDateFormat();
-        try {
-            note.setCreationDate(formatter.parse(noteJson.getCreationDate()));
-        } catch (ParseException ex) {
+        if(noteJson.getImage() != null)
+            note.setImage(Base64.decodeBase64(noteJson.getImage()));
 
-        }
+//        SimpleDateFormat formatter = new SimpleDateFormat();
+//        try {
+//            note.setCreationDate(formatter.parse(noteJson.getCreationDate()));
+//        } catch (ParseException ex) {
+//
+//        }
         note.setRating(0);
         note.setLastUsed(null);
         note.setChanged(null);
@@ -65,6 +74,20 @@ public class NoteContoller {
     public ResponseEntity<?> getAllNotes(@PathVariable("id") long id) {
         Topic topic = topicRepository.findByTopicId(id);
         return ResponseEntity.ok(noteRepository.findAllByTopic(topic));
+    }
+
+    @RequestMapping(value = "note/all/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getALLNotesByUserId(@PathVariable("userId") long userId){
+
+        User user = userRepository.findByUserId(userId);
+        List<Topic> topics = topicRepository.findAllByUser(user);
+        List<Note> notes = new ArrayList<Note>();
+
+        for(int i = 0; i<topics.size(); i++){
+            notes.addAll(noteRepository.findAllByTopic(topics.get(i)));
+        }
+
+        return ResponseEntity.ok(notes);
     }
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE)

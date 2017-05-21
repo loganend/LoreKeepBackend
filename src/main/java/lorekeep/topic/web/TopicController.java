@@ -88,9 +88,10 @@ public class TopicController {
     }
 
     @RequestMapping(value = "/topic/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllTopics(@PathVariable("id") long id) {
+    public ResponseEntity<List<Topic>> getAllTopics(@PathVariable("id") long id) {
         User user = userRepository.findByUserId(id);
-        return ResponseEntity.ok(topicRepository.findAllByUser(user));
+        List<Topic> topics = topicRepository.findAllByUser(user);
+        return ResponseEntity.ok(topics);
     }
 
     @RequestMapping(value = "/topic/{id}", method = RequestMethod.DELETE)
