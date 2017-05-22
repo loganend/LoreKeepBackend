@@ -48,7 +48,7 @@ public interface ChangesRepository extends JpaRepository<Changes, Long> {
 
     @Modifying
     @Transactional
-    @Query("delete from Changes c where c.sessionId = :sessionId and c.topicDelId > 0")
+    @Query("delete from Changes c where c.sessionId = :sessionId and c.topicId = :topicId and c.topicDelId > 0")
     void deleteSessionDelNote(@Param("sessionId") String sessionId, @Param("topicId") Long topicId);
 
     @Modifying
