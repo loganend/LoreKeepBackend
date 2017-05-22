@@ -11,5 +11,6 @@ import java.util.List;
 public interface NoteRepository  extends JpaRepository<Note, Long>{
 
     List<Note> findAllByTopic(Topic topic);
+    Note findByNoteId(Long noteId);
     Note findByTopicAndNoteId(Topic topic, Long noteId);
 }

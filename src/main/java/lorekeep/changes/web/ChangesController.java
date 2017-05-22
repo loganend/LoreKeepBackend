@@ -3,14 +3,13 @@ package lorekeep.changes.web;
 
 import lorekeep.changes.Changes;
 import lorekeep.changes.ChangesRepository;
+import lorekeep.note.Note;
+import lorekeep.note.NoteRepository;
 import lorekeep.topic.Topic;
 import lorekeep.topic.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,9 @@ public class ChangesController {
 
     @Autowired
     private TopicRepository topicRepository;
+
+    @Autowired
+    private NoteRepository noteRepository;
 
 
     @RequestMapping(value = "/changes", method = RequestMethod.GET)
@@ -76,4 +78,35 @@ public class ChangesController {
 
         return ResponseEntity.ok().body(topicsDelId);
     }
+
+
+    @RequestMapping(value = "/changes/note/{topicId}", method = RequestMethod.GET)
+    public ResponseEntity<?> changesNote(@PathVariable("topicId") long topicId, @CookieValue("sessionId") String sessionId) {
+
+        List<Note> notes = new ArrayList<Note>();
+
+        Changes changes = changesRepository.findFirstBySessionId(sessionId);
+        if (changes == null) {
+            return ResponseEntity.ok(notes);
+        }
+
+        List<Changes> notesId = changesRepository.findNotesBySessionAndUser(sessionId, changes.getUserId(), topicId);
+
+
+        for (int i = 0; i < notesId.size(); i++) {
+            notes.add(i, noteRepository.findByNoteId(notesId.get(i).getNoteId()));
+        }
+
+        if(!notesId.isEmpty()) {
+            try {
+                changesRepository.deleteSessionCreatedNote(sessionId, topicId);
+            } catch (Exception e) {
+            }
+        }
+
+        return ResponseEntity.ok(notes);
+    }
+
+
+
 }

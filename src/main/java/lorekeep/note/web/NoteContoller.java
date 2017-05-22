@@ -1,11 +1,15 @@
 package lorekeep.note.web;
 
+import lorekeep.changes.Changes;
+import lorekeep.changes.ChangesRepository;
 import lorekeep.note.Note;
 import lorekeep.note.NoteRepository;
 import lorekeep.note.web.json.JsonNoteCreate;
 import lorekeep.note.web.json.JsonNoteUpdate;
 import lorekeep.topic.Topic;
 import lorekeep.topic.TopicRepository;
+import lorekeep.user.Session;
+import lorekeep.user.SessionRepository;
 import lorekeep.user.UserRepository;
 import lorekeep.user.web.json.ErrorMessage;
 import lorekeep.user.web.json.Response;
@@ -34,8 +38,14 @@ public class NoteContoller {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
+    private ChangesRepository changesRepository;
+
     @RequestMapping(value = "/note", method = RequestMethod.POST)
-    public ResponseEntity createNote(@RequestBody JsonNoteCreate noteJson) {
+    public ResponseEntity createNote(@RequestBody JsonNoteCreate noteJson, @CookieValue("sessionId") String sessionId) {
 
         if (noteJson == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("\"error\": \"no content");
@@ -66,6 +76,29 @@ public class NoteContoller {
         note.setChanged(null);
 
         note = noteRepository.save(note);
+
+
+
+        List<Session> sessions = sessionRepository.findByUserId(topic.getUser().getUserId());
+
+
+        for(int i=0; i<sessions.size(); i++){
+            if(!sessions.get(i).getSessionId().equals(sessionId)){
+                Changes changes = new Changes();
+                changes.setUserId(topic.getUser().getUserId());
+                changes.setTopicId(topic.getTopicId());
+                changes.setSession(sessions.get(i).getSessionId());
+                changes.setNoteId(note.getNoteId());
+
+                changesRepository.save(changes);
+            }
+        }
+
+
+
+
+
+
 
         return ResponseEntity.ok().body(new Response("id", note.getNoteId()));
     }

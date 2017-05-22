@@ -15,15 +15,29 @@ import java.util.List;
 public interface ChangesRepository extends JpaRepository<Changes, Long> {
 
 //    @Query ("select c from Changes c")
-//    ArrayList<Changes> findAllByCustomQueryAndStream();
-
-    @Query("select u from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.topicId > 0")
+    //    ArrayList<Changes> findAllByCustomQueryAndStream();
+    @Modifying
+    @Transactional
+    @Query("select u from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.noteId = 0 and u.topicId > 0")
     List<Changes> findBySessionIdAndUserI(@Param("sessionId") String sessionId,
                                             @Param("userId") Long userId);
-
+    @Modifying
+    @Transactional
     @Query("select u.topicDelId from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.topicDelId > 0")
     List<Long> findDelBySessionIdAndUserI(@Param("sessionId") String sessionId,
                                               @Param("userId") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query("select u from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.topicId = :topicId and u.noteId > 0")
+    List<Changes> findNotesBySessionAndUser(@Param("sessionId") String sessionId,
+            @Param("userId") Long userId, @Param("topicId") Long topicId);
+
+    @Modifying
+    @Transactional
+    @Query("select u.topicDelId from Changes u where u.sessionId = :sessionId and u.userId = :userId and u.noteDelId > 0")
+    List<Changes> findNotesDelBySessionAndUser(@Param("sessionId") String sessionId,
+                                            @Param("userId") Long userId);
 
 
     Changes findBySessionIdAndUserIdAndTopicId(String sessionId, Long userId, Long topicId);
@@ -37,8 +51,15 @@ public interface ChangesRepository extends JpaRepository<Changes, Long> {
 
     @Modifying
     @Transactional
-    @Query("delete from Changes c where c.sessionId = :sessionId and c.topicId > 0")
+    @Query("delete from Changes c where c.sessionId = :sessionId and c.topicId > 0 and c.noteId = 0")
     void deleteSessionCreatedTopic(@Param("sessionId") String sessionId);
+
+    @Modifying
+    @Transactional
+    @Query("delete from Changes c where c.sessionId = :sessionId and c.topicId = :topicId and c.noteId > 0")
+    void deleteSessionCreatedNote(@Param("sessionId") String sessionId, @Param("topicId") Long topicId);
+
+
 
 
 
