@@ -107,6 +107,28 @@ public class ChangesController {
         return ResponseEntity.ok(notes);
     }
 
+    @RequestMapping(value = "/changes/delete/note/{topicId}", method = RequestMethod.GET)
+    public ResponseEntity<?> changesDelNote(@PathVariable("topicId") Long topicId, @CookieValue("sessionId") String sessionId) {
+
+
+        Changes notes = changesRepository.findFirstBySessionId(sessionId);
+        if (notes == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        List<Long> notessDelId = changesRepository.findNotesDelBySessionAndUser(sessionId, notes.getUserId(), topicId);
+
+        if(!notessDelId.isEmpty()) {
+            try {
+                changesRepository.deleteSessionDelNote(sessionId, topicId);
+            } catch (Exception e) {
+
+            }
+        }
+
+        return ResponseEntity.ok().body(notessDelId);
+    }
+
 
 
 }

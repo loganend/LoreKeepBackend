@@ -123,20 +123,35 @@ public class NoteContoller {
         return ResponseEntity.ok(notes);
     }
 
-    @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteNote(@PathVariable("id") long id) {
+    @RequestMapping(value = "/note/{noteId}/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteNote(@PathVariable("noteId") Long noteId, @PathVariable("userId") Long userId, @CookieValue("sessionId") String sessionId) {
+
+        Note note = noteRepository.findByNoteId(noteId);
 
         try {
-            noteRepository.delete(id);
+            noteRepository.delete(noteId);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{\"error\":\"no content\"}");
+        }
+
+        List<Session> sessions = sessionRepository.findByUserId(userId);
+
+        for(int i=0; i<sessions.size(); i++){
+            if(!sessions.get(i).getSessionId().equals(sessionId)){
+
+                Changes changes = new Changes();
+                changes.setUserId(userId);
+                changes.setSession(sessions.get(i).getSessionId());
+                changes.setTopicDelId(note.getNoteId());
+                changesRepository.save(changes);
+            }
         }
 
         return ResponseEntity.ok().body(new Response("info", "deleted"));
     }
 
     @RequestMapping(value = "/note", method = RequestMethod.PUT)
-    public ResponseEntity updateNote(@RequestBody JsonNoteUpdate noteJson) {
+    public ResponseEntity updateNote(@RequestBody JsonNoteUpdate noteJson, @CookieValue("sessionId") String sessionId) {
         if (noteJson == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("\"error\": \"no content");
         }
@@ -175,6 +190,23 @@ public class NoteContoller {
             note.setChanged(Boolean.parseBoolean(noteJson.getChanged()));
 
         noteRepository.save(note);
+
+
+
+        List<Session> sessions = sessionRepository.findByUserId(topic.getUser().getUserId());
+
+        for(int i=0; i<sessions.size(); i++){
+            if(!sessions.get(i).getSessionId().equals(sessionId)){
+
+                Changes changes = new Changes();
+                changes.setUserId(topic.getUser().getUserId());
+                changes.setSession(sessions.get(i).getSessionId());
+                changes.setTopicId(topic.getTopicId());
+                changes.setNoteId(note.getNoteId());
+
+                changesRepository.save(changes);
+            }
+        }
 
         return ResponseEntity.ok().body(new Response("info", "updated"));
     }
