@@ -156,12 +156,12 @@ public class NoteContoller {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("\"error\": \"no content");
         }
 
-        Topic topic = topicRepository.findByTopicId(Long.parseLong(noteJson.getTopicId()));
+        Topic topic = topicRepository.findByTopicId(Long.parseLong(noteJson.getServerTopicId()));
         if (topic == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new Response("error",new ErrorMessage("topic not exist")));
         }
-        Note note = noteRepository.findByTopicAndNoteId(topic, Long.parseLong(noteJson.getNoteId()));
+        Note note = noteRepository.findByTopicAndNoteId(topic, Long.parseLong(noteJson.getServerNoteId()));
         if (note == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new Response("error",new ErrorMessage("Note not exist")));
@@ -208,6 +208,6 @@ public class NoteContoller {
             }
         }
 
-        return ResponseEntity.ok().body(new Response("info", "updated"));
+        return ResponseEntity.ok().body(new Response("info", note.getNoteId()));
     }
 }

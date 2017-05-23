@@ -4,6 +4,8 @@ public class JsonNoteUpdate {
 
     private String noteId;
     private String topicId;
+    private String serverTopicId;
+    private String serverNoteId;
     private String comment;
     private String content;
     private String url;
@@ -11,6 +13,23 @@ public class JsonNoteUpdate {
     private String rating;
     private String lastUsed;
     private String changed;
+
+    public void setNoteId(String noteId) {
+        this.noteId = noteId;
+    }
+
+    public String getServerTopicId() {
+
+        return serverTopicId;
+    }
+
+    public String getServerNoteId() {
+        return serverNoteId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
+    }
 
     public String getNoteId() {
         return noteId;
